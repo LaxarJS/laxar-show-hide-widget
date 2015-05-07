@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- [#2](https://github.com/LaxarJS/ax-show-hide-widget/issues/2): Specification: Deleted default for `visibility.flag`
+
 
 ## v1.3.1
 
