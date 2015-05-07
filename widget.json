@@ -57,7 +57,6 @@
             "flag": {
                "type": "string",
                "description": "Flag published on change of the content's visibility.",
-               "default": "visible-showHideContent",
                "format": "topic"
             },
             "toggleOn": {
