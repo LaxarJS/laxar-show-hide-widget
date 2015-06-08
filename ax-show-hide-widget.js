@@ -5,7 +5,7 @@
  */
 define( [
    'angular',
-   'laxar_patterns',
+   'laxar-patterns',
    './directive'
 ], function( ng, patterns, axShowHideWidgetDirective ) {
    'use strict';
