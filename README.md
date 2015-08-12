@@ -1,4 +1,4 @@
-# AxShowHideWidget
+# AxShowHideWidget [![Build Status](https://travis-ci.org/LaxarJS/ax-show-hide-widget.svg?branch=master)](https://travis-ci.org/LaxarJS/ax-show-hide-widget)
 
 Toggles the visibility of an area upon receiving events.
 
