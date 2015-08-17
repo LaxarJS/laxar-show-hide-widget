@@ -1,5 +1,5 @@
 {
-   "name": "AxShowHideWidget",
+   "name": "ax-show-hide-widget",
    "description": "Toggles the visibility of an area upon receiving events.",
    "integration": {
       "technology": "angular",

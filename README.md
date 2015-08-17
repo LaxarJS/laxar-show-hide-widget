@@ -1,4 +1,4 @@
-# AxShowHideWidget [![Build Status](https://travis-ci.org/LaxarJS/ax-show-hide-widget.svg?branch=master)](https://travis-ci.org/LaxarJS/ax-show-hide-widget)
+# ax-show-hide-widget [![Build Status](https://travis-ci.org/LaxarJS/ax-show-hide-widget.svg?branch=master)](https://travis-ci.org/LaxarJS/ax-show-hide-widget)
 
 Toggles the visibility of an area upon receiving events.
 
@@ -24,7 +24,7 @@ For installation instruction take a look at the [LaxarJS documentation](https://
       "widget": "laxarjs/ax-headline-widget",
       "features": {
          "headline": {
-            "i18nHtmlText": "Above the AxShowHideWidget area"
+            "i18nHtmlText": "Above the ax-show-hide-widget area"
          }
       }
    },
@@ -59,13 +59,13 @@ For installation instruction take a look at the [LaxarJS documentation](https://
    }
 ]
 ```
-Use this configuration on a page to get a AxShowHideWidget instance.
+Use this configuration on a page to get a ax-show-hide-widget instance.
 
 In this example there are two AxHeadlineWidget which display a simple headline.
 The first headline is in the main widget area of the page and is visible all the time.
-The second headline is in the widget area of the AxShowHideWidget and can be shown or hidden.
+The second headline is in the widget area of the ax-show-hide-widget and can be shown or hidden.
 
-The area provided by the AxShowHideWidget is named using its `id` and the configuration parameter `area.name`.
+The area provided by the ax-show-hide-widget is named using its `id` and the configuration parameter `area.name`.
 The widget shows this area if it receives a `takeActionRequest` for one of the action configured under `show.onActions` and hides the area when it receives a `takeActionRequest` for one of the action configured under `hide.onActions`.
 
 For full configuration options refer to the [widget.json](widget.json).
