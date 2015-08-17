@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v2.1.0
+
 - [#4](https://github.com/LaxarJS/ax-show-hide-widget/issues/4): Support AMD references (and installation through bower)
 - [#5](https://github.com/LaxarJS/ax-show-hide-widget/issues/5): Added a `.travis.yml` for open continuous integration
 
