@@ -4,17 +4,18 @@
  * http://laxarjs.org/license
  */
 define( [
+   'json!../widget.json',
    '../ax-show-hide-widget',
    'laxar/laxar_testing'
-], function( module, ax ) {
+], function( descriptor, module, ax ) {
    'use strict';
 
-   describe( 'An AxShowHideWidget', function() {
+   describe( 'An ax-show-hide-widget', function() {
 
       var testBed;
 
       beforeEach( function setup() {
-         testBed = ax.testing.portalMocksAngular.createControllerTestBed( 'laxarjs/ax-show-hide-widget' );
+         testBed = ax.testing.portalMocksAngular.createControllerTestBed( descriptor );
          testBed.useWidgetJson();
          testBed.featuresMock = {
             area: {
