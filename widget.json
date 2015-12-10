@@ -31,7 +31,8 @@
                   "description": "Actions on which the content should become visible.",
                   "items": {
                      "type": "string",
-                     "format": "topic"
+                     "format": "topic",
+                     "axRole": "inlet"
                   }
                }
             }
@@ -45,7 +46,8 @@
                   "type": "array",
                   "items": {
                      "type": "string",
-                     "format": "topic"
+                     "format": "topic",
+                     "axRole": "inlet"
                   },
                   "description": "Actions on which the content should become invisible."
                }
@@ -63,13 +65,16 @@
                },
                "flag": {
                   "type": "string",
-                  "description": "Flag published on change of the content's visibility.",
-                  "format": "topic"
+                  "format": "topic",
+                  "axRole": "outlet",
+                  "description": "Flag published on change of the content's visibility."
                },
                "toggleOn": {
                   "type": "string",
-                  "description": "Flag toggling the content's visibility. The content is shown if true, hidden otherwise.",
-                  "format": "flag-topic"
+                  "format": "flag-topic",
+                  "axRole": "inlet",
+                  "axPattern": "flag",
+                  "description": "Flag toggling the content's visibility. The content is shown if true, hidden otherwise."
                }
             }
          },
