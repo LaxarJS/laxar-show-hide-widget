@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v2.2.0
+
 - [#6](https://github.com/LaxarJS/ax-show-hide-widget/issues/6): Expanded the widget definition
 
 
