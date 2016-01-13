@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- [#7](https://github.com/LaxarJS/ax-show-hide-widget/issues/7): Use laxar-mocks instead of laxar-testing now
+
 
 ## v2.2.0
 
