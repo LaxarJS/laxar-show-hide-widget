@@ -5,40 +5,67 @@
  */
 define( [
    'json!../widget.json',
-   '../ax-show-hide-widget',
-   'laxar/laxar_testing'
-], function( descriptor, module, ax ) {
+   'laxar-mocks'
+
+], function( descriptor, axMocks ) {
    'use strict';
+
+   var widgetEventBus;
+   var widgetScope;
+   var testEventBus;
+
+   function createSetup( widgetConfiguration ) {
+
+      beforeEach( axMocks.createSetupForWidget( descriptor, {
+         knownMissingResources: [ 'ax-button-list-control.css', 'ax-show-hide-widget.css' ]
+      } ) );
+
+      beforeEach( function() {
+         axMocks.widget.configure( widgetConfiguration );
+      } );
+
+      beforeEach( axMocks.widget.load );
+
+      beforeEach( function() {
+         widgetScope = axMocks.widget.$scope;
+         widgetEventBus = axMocks.widget.axEventBus;
+         testEventBus = axMocks.eventBus;
+         axMocks.triggerStartupEvents();
+      } );
+   }
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    describe( 'An ax-show-hide-widget', function() {
 
-      var testBed;
+      describe( 'with a configured feature area and a name for it', function() {
 
-      beforeEach( function setup() {
-         testBed = ax.testing.portalMocksAngular.createControllerTestBed( descriptor );
-         testBed.useWidgetJson();
-         testBed.featuresMock = {
+         createSetup( {
             area: {
                name: 'toggleMe'
             }
-         };
-         refresh( testBed );
-      } );
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      describe( 'with a configured feature area', function() {
-
-         it( 'exports a widget area whose visibility is toggled (R1.1)', function() {
-            expect( testBed.scope.model.contentArea ).toEqual( 'toggleMe' );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-         it( 'names the widget area "content" if nothing else is configured (R1.2)', function() {
-            delete testBed.featuresMock.area.name;
-            refresh( testBed );
-            expect( testBed.scope.model.contentArea ).toEqual( 'content' );
+         it( 'exports a widget area whose visibility is toggled (R1.1)', function() {
+            expect( widgetScope.model.contentArea ).toEqual( 'toggleMe' );
+         } );
+
+      } );
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      describe( 'with a configured feature area without name', function() {
+
+         createSetup( {
+            area: { }
+         } );
+
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+         it( 'names the widget area "content" (R1.2)', function() {
+            expect( widgetScope.model.contentArea ).toEqual( 'content' );
          } );
 
       } );
@@ -47,34 +74,33 @@ define( [
 
       describe( 'with a configured feature show', function() {
 
-         beforeEach( function() {
-            testBed.featuresMock.show = {
+         createSetup( {
+            show: {
                onActions: [ 'showAreaRequest' ]
-            };
-            refresh( testBed );
+            }
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'shows the area for a configured action (R2.1)', function() {
-            expect( testBed.scope.model.areaShowing ).toBe( false );
-            testBed.eventBusMock.publish( 'takeActionRequest.showAreaRequest', {
+            expect( widgetScope.model.areaShowing ).toBe( false );
+            testEventBus.publish( 'takeActionRequest.showAreaRequest', {
                action: 'showAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( true );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( true );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'sends willTakeAction and didTakeAction events when the action takes place (R2.1)', function() {
-            testBed.eventBusMock.publish( 'takeActionRequest.showAreaRequest', {
+            testEventBus.publish( 'takeActionRequest.showAreaRequest', {
                action: 'showAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.eventBus.publish )
+            testEventBus.flush();
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'willTakeAction.showAreaRequest', { action: 'showAreaRequest' } );
-            expect( testBed.scope.eventBus.publish )
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'didTakeAction.showAreaRequest', { action: 'showAreaRequest' } );
          } );
       } );
@@ -83,35 +109,39 @@ define( [
 
       describe( 'with a configured feature hide', function() {
 
-         beforeEach( function() {
-            testBed.featuresMock.hide = {
+         createSetup( {
+            hide: {
                onActions: [ 'hideAreaRequest' ]
-            };
-            refresh( testBed );
-            testBed.scope.model.areaShowing = true;
+            }
+         } );
+
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+         beforeEach( function() {
+            widgetScope.model.areaShowing = true;
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'hides the area for a configured action (R3.1)', function() {
-            expect( testBed.scope.model.areaShowing ).toBe( true );
-            testBed.eventBusMock.publish( 'takeActionRequest.hideAreaRequest', {
+            expect( widgetScope.model.areaShowing ).toBe( true );
+            testEventBus.publish( 'takeActionRequest.hideAreaRequest', {
                action: 'hideAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( false );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( false );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'sends willTakeAction and didTakeAction events when the action takes place (R3.1)', function() {
-            testBed.eventBusMock.publish( 'takeActionRequest.hideAreaRequest', {
+            testEventBus.publish( 'takeActionRequest.hideAreaRequest', {
                action: 'hideAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.eventBus.publish )
+            testEventBus.flush();
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'willTakeAction.hideAreaRequest', { action: 'hideAreaRequest' } );
-            expect( testBed.scope.eventBus.publish )
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'didTakeAction.hideAreaRequest', { action: 'hideAreaRequest' } );
          } );
 
@@ -121,31 +151,27 @@ define( [
 
       describe( 'with a configured feature visibility', function() {
 
-         beforeEach( function() {
-            testBed.featuresMock = {
-               show: {
-                  onActions: [ 'showAreaRequest' ]
-               },
-               hide: {
-                  onActions: [ 'hideAreaRequest' ]
-               },
-               visibility: {
-                  flag: 'visibleArea',
-                  toggleOn: 'mustShowContent'
-               }
-            };
-            refresh( testBed );
+         createSetup( {
+            show: {
+               onActions: [ 'showAreaRequest' ]
+            },
+            hide: {
+               onActions: [ 'hideAreaRequest' ]
+            },
+            visibility: {
+               flag: 'visibleArea',
+               toggleOn: 'mustShowContent'
+            }
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'publishes the visibility (showing) of the content via flag (R4.1)', function() {
-            testBed.scope.eventBus.publish.reset();
-            testBed.eventBusMock.publish( 'takeActionRequest.showAreaRequest', {
+            testEventBus.publish( 'takeActionRequest.showAreaRequest', {
                action: 'showAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.eventBus.publish )
+            testEventBus.flush();
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'didChangeFlag.visibleArea.true', {
                   flag: 'visibleArea',
                   state: true
@@ -155,13 +181,12 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'publishes the visibility (hiding) of the content via flag (R4.1)', function() {
-            testBed.scope.model.areaShowing = true;
-            testBed.scope.eventBus.publish.reset();
-            testBed.eventBusMock.publish( 'takeActionRequest.hideAreaRequest', {
+            widgetScope.model.areaShowing = true;
+            testEventBus.publish( 'takeActionRequest.hideAreaRequest', {
                action: 'hideAreaRequest'
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.eventBus.publish )
+            testEventBus.flush();
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'didChangeFlag.visibleArea.false', {
                   flag: 'visibleArea',
                   state: false
@@ -171,7 +196,7 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'initially publishes the flag state on didNavigate (R4.2)', function() {
-            expect( testBed.scope.eventBus.publish )
+            expect( widgetEventBus.publish )
                .toHaveBeenCalledWith( 'didChangeFlag.visibleArea.false', {
                   flag: 'visibleArea',
                   state: false
@@ -181,56 +206,42 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'can be shown via flag (R4.3)', function() {
-            expect( testBed.scope.model.areaShowing ).toBe( false );
-            testBed.eventBusMock.publish( 'didChangeFlag.mustShowContent.true', {
+            expect( widgetScope.model.areaShowing ).toBe( false );
+            testEventBus.publish( 'didChangeFlag.mustShowContent.true', {
                flag: 'mustShowContent',
                state: true
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( true );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( true );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'can be hidden via flag (R4.3)', function() {
-            testBed.scope.model.areaShowing = true;
-            testBed.eventBusMock.publish( 'didChangeFlag.mustShowContent.false', {
+            widgetScope.model.areaShowing = true;
+            testEventBus.publish( 'didChangeFlag.mustShowContent.false', {
                flag: 'mustShowContent',
                state: false
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( false );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( false );
          } );
-
-         /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-         it( 'can be toggled via inverted flag (R4.3)', function() {
-            testBed.featuresMock.visibility.toggleOn = '!mustHideContent';
-            refresh( testBed );
-            testBed.eventBusMock.publish( 'didChangeFlag.mustHideContent.false', {
-               flag: 'mustHideContent',
-               state: false
-            } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( true );
-         } );
-
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'processes change requests for the visibility of the provided areas (R4.4)', function() {
-            expect( testBed.scope.eventBus.subscribe ).toHaveBeenCalledWith(
-               'changeAreaVisibilityRequest.testWidgetId', jasmine.any( Function )
+            expect( widgetEventBus.subscribe ).toHaveBeenCalledWith(
+               'changeAreaVisibilityRequest.testWidget', jasmine.any( Function )
             );
 
-            testBed.eventBusMock.publish( 'changeAreaVisibilityRequest.testWidgetId.content.true', {
-               area: 'testWidgetId.content',
+            testEventBus.publish( 'changeAreaVisibilityRequest.testWidget.content.true', {
+               area: 'testWidget.content',
                visible: true
             } );
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.eventBus.publish ).toHaveBeenCalledWith(
-               'didChangeAreaVisibility.testWidgetId.content.false', {
-                  area: 'testWidgetId.content',
+            testEventBus.flush();
+            expect( widgetEventBus.publish ).toHaveBeenCalledWith(
+               'didChangeAreaVisibility.testWidget.content.false', {
+                  area: 'testWidget.content',
                   visible: false
                }, jasmine.any( Object )
             );
@@ -241,34 +252,34 @@ define( [
          describe( 'when shown', function() {
 
             beforeEach( function() {
-               testBed.eventBusMock.publish( 'didChangeAreaVisibility.testArea.true', {
+               testEventBus.publish( 'didChangeAreaVisibility.testArea.true', {
                   area: 'testArea',
                   visible: true
                } );
-               testBed.eventBusMock.publish( 'takeActionRequest.showAreaRequest', {
+               testEventBus.publish( 'takeActionRequest.showAreaRequest', {
                   action: 'showAreaRequest'
                } );
-               jasmine.Clock.tick( 0 );
+               testEventBus.flush();
             } );
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
 
             it( 'triggers change requests for the visibility of the provided areas (R4.5)', function() {
-               expect( testBed.scope.eventBus.publishAndGatherReplies ).toHaveBeenCalledWith(
-                  'changeWidgetVisibilityRequest.testWidgetId.true', {
-                     widget: 'testWidgetId',
+               expect( widgetEventBus.publishAndGatherReplies ).toHaveBeenCalledWith(
+                  'changeWidgetVisibilityRequest.testWidget.true', {
+                     widget: 'testWidget',
                      visible: true
                   }, jasmine.any( Object )
                );
 
-               testBed.eventBusMock.publish( 'changeAreaVisibilityRequest.testWidgetId.content.true', {
-                  area: 'testWidgetId.content',
+               testEventBus.publish( 'changeAreaVisibilityRequest.testWidget.content.true', {
+                  area: 'testWidget.content',
                   visible: true
                } );
-               jasmine.Clock.tick( 0 );
-               expect( testBed.scope.eventBus.publish ).toHaveBeenCalledWith(
-                  'didChangeAreaVisibility.testWidgetId.content.true', {
-                     area: 'testWidgetId.content',
+               testEventBus.flush();
+               expect( widgetEventBus.publish ).toHaveBeenCalledWith(
+                  'didChangeAreaVisibility.testWidget.content.true', {
+                     area: 'testWidget.content',
                      visible: true
                   }, jasmine.any( Object )
                );
@@ -279,23 +290,23 @@ define( [
             describe( 'and hidden again', function() {
 
                beforeEach( function() {
-                  testBed.eventBusMock.publish( 'didChangeAreaVisibility.testArea.false', {
+                  testEventBus.publish( 'didChangeAreaVisibility.testArea.false', {
                      area: 'testArea',
                      visible: false
                   } );
-                  testBed.eventBusMock.publish( 'changeAreaVisibilityRequest.testWidgetId.content.true', {
-                     area: 'testWidgetId.content',
+                  testEventBus.publish( 'changeAreaVisibilityRequest.testWidget.content.true', {
+                     area: 'testWidget.content',
                      visible: true
                   } );
-                  jasmine.Clock.tick( 0 );
+                  testEventBus.flush();
                } );
 
                ///////////////////////////////////////////////////////////////////////////////////////////////
 
                it( 'triggers change requests for the visibility of the provided areas (R4.5)', function() {
-                  expect( testBed.scope.eventBus.publish ).toHaveBeenCalledWith(
-                     'didChangeAreaVisibility.testWidgetId.content.false', {
-                        area: 'testWidgetId.content',
+                  expect( widgetEventBus.publish ).toHaveBeenCalledWith(
+                     'didChangeAreaVisibility.testWidget.content.false', {
+                        area: 'testWidget.content',
                         visible: false
                      }, jasmine.any( Object )
                   );
@@ -306,39 +317,58 @@ define( [
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      describe( 'with a configured feature visibility with a configured inverted flag', function() {
+
+         createSetup( {
+            show: {
+               onActions: [ 'showAreaRequest' ]
+            },
+            hide: {
+               onActions: [ 'hideAreaRequest' ]
+            },
+            visibility: {
+               flag: 'visibleArea',
+               toggleOn: '!mustHideContent'
+            }
+         } );
+
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+         it( 'can be toggled via inverted flag (R4.3)', function() {
+            testEventBus.publish( 'didChangeFlag.mustHideContent.false', {
+               flag: 'mustHideContent',
+               state: false
+            } );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( true );
+         } );
+
+      } );
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       describe( 'with visibility set initially to true', function() {
 
-         beforeEach( function() {
-            testBed.featuresMock = {
-               show: {
-                  onActions: [ 'showAreaRequest' ]
-               },
-               hide: {
-                  onActions: [ 'hideAreaRequest' ]
-               },
-               visibility: {
-                  flag: 'visibleArea',
-                  toggleOn: 'mustShowContent',
-                  initially: true
-               }
-            };
-            refresh( testBed );
+         createSetup( {
+            show: {
+               onActions: [ 'showAreaRequest' ]
+            },
+            hide: {
+               onActions: [ 'hideAreaRequest' ]
+            },
+            visibility: {
+               flag: 'visibleArea',
+               toggleOn: 'mustShowContent',
+               initially: true
+            }
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          it( 'starts in the visible state (R4.4)', function() {
-            jasmine.Clock.tick( 0 );
-            expect( testBed.scope.model.areaShowing ).toBe( true );
+            testEventBus.flush();
+            expect( widgetScope.model.areaShowing ).toBe( true );
          } );
       } );
    } );
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-   function refresh( testBed ) {
-      testBed.setup();
-      testBed.eventBusMock.publish( 'didNavigate' );
-      jasmine.Clock.tick( 0 );
-   }
 } );
