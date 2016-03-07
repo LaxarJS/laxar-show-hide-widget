@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- [#9](https://github.com/LaxarJS/ax-show-hide-widget/issues/9): Fixed broken visibility test
+
 
 ## v2.3.1
 
