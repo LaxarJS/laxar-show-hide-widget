@@ -282,9 +282,9 @@ define( [
                      area: 'testArea',
                      visible: false
                   } );
-                  testBed.eventBusMock.publish( 'changeAreaVisibilityRequest.testWidgetId.content.true', {
+                  testBed.eventBusMock.publish( 'changeAreaVisibilityRequest.testWidgetId.content.false', {
                      area: 'testWidgetId.content',
-                     visible: true
+                     visible: false
                   } );
                   jasmine.Clock.tick( 0 );
                } );
