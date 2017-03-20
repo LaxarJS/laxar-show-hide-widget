@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- [#10](https://github.com/LaxarJS/ax-show-hide-widget/issues/10): upgraded to LaxarJS v2
+    + **BREAKING CHANGE:** see ticket for details
 - [#9](https://github.com/LaxarJS/ax-show-hide-widget/issues/9): Fixed broken visibility test
 - [#8](https://github.com/LaxarJS/ax-show-hide-widget/issues/8): Fixed visibility inside ax-accordion-widget
 

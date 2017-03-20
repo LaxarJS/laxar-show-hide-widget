@@ -1,10 +1,12 @@
 {
-   "name": "ax-show-hide-widget",
+   "name": "laxar-show-hide-widget",
    "description": "Toggles the visibility of an area upon receiving events.",
+
    "integration": {
       "technology": "angular",
       "type": "widget"
    },
+
    "features": {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "type": "object",
@@ -56,7 +58,7 @@
 
          "visibility": {
             "type": "object",
-            "description": "Allow to control area visibility based on flag state.",
+            "description": "Features regarding the visibility of the controlled widget area.",
             "properties": {
                "initially": {
                   "type": "boolean",
@@ -70,11 +72,14 @@
                   "description": "Flag published on change of the content's visibility."
                },
                "toggleOn": {
-                  "type": "string",
-                  "format": "flag-topic",
-                  "axRole": "inlet",
-                  "axPattern": "flag",
-                  "description": "Flag toggling the content's visibility. The content is shown if true, hidden otherwise."
+                  "type": "array",
+                  "items": {
+                     "type": "string",
+                     "format": "flag-topic",
+                     "axRole": "inlet",
+                     "axPattern": "flag"
+                  },
+                  "description": "Flags toggling the content's visibility. The content is shown if any of the flags is true, hidden otherwise."
                }
             }
          },
