@@ -95,7 +95,7 @@ describe( 'An ax-show-hide-widget', () => {
             testEventBus.publish( 'takeActionRequest.showAreaRequest', {
                action: 'showAreaRequest'
             } );
-            testEventBus.drainAsync().then( done, done.fail );
+            drainEventBusAndTick( done );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ describe( 'An ax-show-hide-widget', () => {
             testEventBus.publish( 'takeActionRequest.hideAreaRequest', {
                action: 'hideAreaRequest'
             } );
-            testEventBus.drainAsync().then( done, done.fail );
+            drainEventBusAndTick( done );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ describe( 'An ax-show-hide-widget', () => {
                flag: 'mustShowContent',
                state: true
             } );
-            testEventBus.drainAsync().then( done, done.fail );
+            drainEventBusAndTick( done );
          } );
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ describe( 'An ax-show-hide-widget', () => {
                   flag: 'mustShowContent',
                   state: false
                } );
-               testEventBus.drainAsync().then( done, done.fail );
+               drainEventBusAndTick( done );
             } );
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,7 +286,7 @@ describe( 'An ax-show-hide-widget', () => {
             flag: 'mustHideContent',
             state: false
          } );
-         testEventBus.drainAsync().then( done, done.fail );
+         drainEventBusAndTick( done );
       } );
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,5 +338,21 @@ describe( 'An ax-show-hide-widget', () => {
       } );
 
    } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   function drainEventBusAndTick( done ) {
+      // to ensure that done is only called after the promise of updateAreaVisibility was resolved, we ensure
+      // that the widget and the testing code wait for the same promise to be resolved before continuing.
+      const promise = new Promise( resolve => {
+         axMocks.widget.axVisibility.updateAreaVisibility.and.callFake( () => {
+            resolve();
+            return promise;
+         } );
+      } );
+      return testEventBus.drainAsync()
+         .then( () => promise )
+         .then( done, done.fail );
+   }
 
 } );
