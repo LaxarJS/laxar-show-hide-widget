@@ -34,7 +34,7 @@ afterEach( axMocks.tearDown );
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-describe( 'An ax-show-hide-widget', () => {
+describe( 'The laxar-show-hide-widget', () => {
 
    describe( 'with a configured feature area and a name for it', () => {
 
