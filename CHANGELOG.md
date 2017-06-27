@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v3.0.0-rc.0
+
 - [#11](https://github.com/LaxarJS/laxar-show-hide-widget/issues/11): renamed repository to match artifact
 
 

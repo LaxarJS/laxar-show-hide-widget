@@ -1,6 +1,6 @@
 {
   "name": "laxar-show-hide-widget",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-rc.0",
   "description": "Toggles the visibility of an area upon receiving events.",
   "homepage": "http://laxarjs.org",
   "main": "laxar-show-hide-widget.js",
