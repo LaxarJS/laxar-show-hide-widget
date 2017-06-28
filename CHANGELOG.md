@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v3.0.0-rc.1
+
 - [#12](https://github.com/LaxarJS/laxar-show-hide-widget/issues/12): fixed bugs due to breaking changes in LaxarJS
 
 
