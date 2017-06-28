@@ -4,7 +4,7 @@
  * http://laxarjs.org/license
  */
 import * as $ from 'jquery';
-import { fn } from 'laxar';
+import debounce from 'lodash.debounce';
 
 export const name = 'axShowHideWidgetDirective';
 
@@ -19,26 +19,27 @@ export function create() {
          restrict: 'A',
          link( scope, element, attrs ) {
 
+            const jqElement = $( element[ 0 ] );
             const options = scope.$eval( attrs[ name ] );
 
             let show;
             let hide;
             if( options.animationsEnabled ) {
                show = () => {
-                  element.css( 'display', 'block' );
-                  const height = calculateContentHeight( element );
-                  animateToHeight( element, height );
+                  jqElement.css( 'display', 'block' );
+                  const height = calculateContentHeight( jqElement );
+                  animateToHeight( jqElement, height );
                };
                hide = () => {
-                  animateToHeight( element, 0 );
+                  animateToHeight( jqElement, 0 );
                };
             }
             else {
-               show = () => { element.show(); };
-               hide = () => { element.hide(); };
+               show = () => { jqElement.show(); };
+               hide = () => { jqElement.hide(); };
             }
 
-            const fixContainerSize = fn.debounce( fixContainerSizeNow, RESIZE_DELAY );
+            const fixContainerSize = debounce( fixContainerSizeNow, RESIZE_DELAY );
 
             let widgetIsVisible;
             let showContent;
@@ -58,7 +59,7 @@ export function create() {
                if( newShowContent ) {
                   if( showContent === undefined ) {
                      // initial show: no animations
-                     element.show();
+                     jqElement.show();
                   }
                   else {
                      show();
@@ -91,11 +92,11 @@ export function create() {
             function fixContainerSizeNow() {
                if( !showContent || !scope.isVisible ) { return; }
                let contentHeight = 0;
-               element.children().each( ( index, child ) => {
+               jqElement.children().each( ( index, child ) => {
                   contentHeight += $( child ).outerHeight( true );
                } );
                if( contentHeight !== currentTargetHeight ) {
-                  animateToHeight( element, contentHeight );
+                  animateToHeight( jqElement, contentHeight );
                   // if this widget contains another animated widget (such as another AxShowHideWidget),
                   // make sure to pick up on its animated content
                   $window.setTimeout( fixContainerSize, RESIZE_DELAY );
@@ -127,20 +128,20 @@ export function create() {
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
 
-            function animateToHeight( element, newHeight ) {
+            function animateToHeight( jqElement, newHeight ) {
                currentTargetHeight = newHeight;
                startWatchingForContentResizing();
                if( newHeight > 0 ) {
-                  element.css( 'display', 'block' );
-                  element.animate( { 'height': `${newHeight}px` }, () => {
-                     element.css( 'height', 'auto' );
+                  jqElement.css( 'display', 'block' );
+                  jqElement.animate( { 'height': `${newHeight}px` }, () => {
+                     jqElement.css( 'height', 'auto' );
                      stopWatchingForContentResizing();
                   } );
                }
                else {
-                  element.animate( { 'height': 0 }, () => {
+                  jqElement.animate( { 'height': 0 }, () => {
                      if( !showContent ) {
-                        element.css( 'display', 'none' );
+                        jqElement.css( 'display', 'none' );
                      }
                   } );
                }
@@ -152,14 +153,14 @@ export function create() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function calculateContentHeight( element ) {
-   element.css( 'visibility', 'hidden' );
-   element.css( 'overflow', 'visible' );
-   element.css( 'height', 'auto' );
-   const height = $( element ).outerHeight( true );
-   element.css( 'height', '0px' );
-   element.css( 'overflow', '' );
-   element.css( 'visibility', '' );
+function calculateContentHeight( jqElement ) {
+   jqElement.css( 'visibility', 'hidden' );
+   jqElement.css( 'overflow', 'visible' );
+   jqElement.css( 'height', 'auto' );
+   const height = jqElement.outerHeight( true );
+   jqElement.css( 'height', '0px' );
+   jqElement.css( 'overflow', '' );
+   jqElement.css( 'visibility', '' );
 
    return height;
 }
