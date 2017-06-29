@@ -3,6 +3,7 @@
 Toggles the visibility of an area upon receiving events.
 
 ## Content
+
 * [Appearance](#appearance)
 * [Usage](#usage)
 * [Features](#features)
@@ -10,14 +11,18 @@ Toggles the visibility of an area upon receiving events.
 * [References](#references)
 
 ## Appearance
+
 The widget does not display anything, but provides an area for other widgets and shows or hides this area depend on events.
 
 
 ## Usage
+
 ### Installation
+
 For installation instruction take a look at the [LaxarJS documentation](https://laxarjs.org/docs/laxar-v2-latest/manuals/installing_widgets).
 
 ### Configuration Example
+
 ```json
 "mainWidgetArea": [
    {
@@ -70,22 +75,30 @@ The widget shows this area if it receives a `takeActionRequest` for one of the a
 
 For full configuration options refer to the [widget.json](widget.json).
 
+
 ## Features
+
 ### 1. Provide a Widget Area (area)
+
 *R1.1* The widget MUST provide an area for widgets and controls its visibility.
 
 *R1.2* The name of the area MUST be configurable and MUST have the default name `content`.
 
 
 ### 2. Show Widget Area (show)
+
 *R2.1* The widget MUST support the configuration of action events.
 If the widget receives a `takeActionRequest` event of one of these, it MUST show the provided widget area.
 
+
 ### 3. Hide Widget Area (hide)
+
 *R3.1* The widget MUST support the configuration of action events.
 If the widget receives a `takeActionRequest` event of one of these, it MUST hide the provided widget area.
 
+
 ### 4. Visibility (visibility)
+
 *R4.1* The widget MUST report the visibility of the provided widget area to the page by a configurable flag.
 
 *R4.2* The widget MUST report the initial status after receiving the `didNavigate` event.
@@ -108,14 +121,17 @@ Except when the widget shows the widget area at the initial page status.
 The animation SHOULD be enabled by default.
 
 ## Integration
+
 ### Patterns
+
 The widget supports the following event patterns as specified by the [LaxarJS Patterns] document.
 
+
 #### Actions
+
 * Action: `show.onActions[*]`
    * Role: Receiver
    * Description: Trigger the widget to show the widget area
-
 
 * Action: `hide.onActions[*]`
    * Role: Receiver
@@ -123,10 +139,10 @@ The widget supports the following event patterns as specified by the [LaxarJS Pa
 
 
 #### Flags
+
 * Flag: `visibility.toggleOn`
    * Role: Receiver
    * Description: Trigger the widget to show (`true`) or to hide (`false`) the widget area.
-
 
 * Flag: `visibility.flag`
    * Role: Sender
@@ -134,9 +150,11 @@ The widget supports the following event patterns as specified by the [LaxarJS Pa
 
 
 #### Visibility
+
 The widget manages visibility events for the configured area (`area.name`).
 
 ## References
+
 The following resources are useful or necessary for the understanding of this document.
 The links refer to the latest version of the documentation.
 Refer to the [bower.json](bower.json) for the specific version that is normative for this document.
