@@ -19,7 +19,7 @@
     "eslint": "eslint *.js spec"
   },
   "dependencies": {
-    "jquery": "^1.11.x",
+    "jquery": "^3.5.x",
     "laxar-patterns": "^2.0.0",
     "lodash.debounce": "^4.0.8"
   },
